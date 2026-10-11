@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="fr-BE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin — Logiconstruct</title>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/style.css?v=2">
+</head>
+<body>
+
+<div id="lockScreen" class="lock" hidden>
+  <form id="lockForm">
+    <img src="../assets/img/logo.png" alt="Logiconstruct" style="height:70px;width:auto;justify-self:start">
+    <p class="label">Espace admin</p>
+    <h2>Accès protégé</h2>
+    <div class="field"><label for="lock_pw">Mot de passe</label><input id="lock_pw" type="password" autocomplete="current-password" required></div>
+    <div id="lockErr" class="notice bad" hidden></div>
+    <div class="acts"><button class="btn accent" type="submit">Entrer</button><a class="btn ghost" href="../">Retour au site</a></div>
+  </form>
+</div>
+
+<div class="admin" id="admin" hidden>
+  <aside class="side" role="tablist" aria-label="Espace admin">
+    <a class="logo" href="../"><img src="../assets/img/logo.png" alt="Logiconstruct" style="height:52px;width:auto"></a>
+    <button class="tab" role="tab" data-tab="stats" aria-selected="true">Statistiques</button>
+    <button class="tab" role="tab" data-tab="messages">Messages <span class="badge" id="msgBadge" hidden></span></button>
+    <button class="tab" role="tab" data-tab="projects">Réalisations</button>
+    <button class="tab" role="tab" data-tab="content">Contenu du site</button>
+    <button class="tab" role="tab" data-tab="security">Sécurité</button>
+    <div class="spacer"></div>
+    <a class="btn ghost sm back" href="../" target="_blank" rel="noopener">Voir le site ↗</a>
+    <button class="btn ghost sm back" id="logout" type="button">Se déconnecter</button>
+  </aside>
+
+  <div class="main">
+    <div data-pane="stats">
+      <div class="main-head">
+        <div><p class="label">Tableau de bord</p><h2>Statistiques</h2></div>
+        <div class="seg" id="range"><button data-d="7">7 j</button><button data-d="30" aria-pressed="true">30 j</button><button data-d="90">90 j</button><button data-d="365">1 an</button></div>
+      </div>
+      <div class="kpis" id="kpis"></div>
+      <div class="panels">
+        <div class="panel span-8"><h3>Visites par jour</h3><div class="cw"><canvas id="chDays"></canvas></div></div>
+        <div class="panel span-4"><h3>Parcours des visiteurs</h3><div class="funnel" id="funnel"></div></div>
+        <div class="panel span-6"><h3>Clics par bouton</h3><div class="cw"><canvas id="chClicks"></canvas></div></div>
+        <div class="panel span-6"><h3>Projets les plus vus</h3><div class="cw"><canvas id="chProjects"></canvas></div></div>
+        <div class="panel span-4"><h3>Appareils</h3><div class="cw" style="height:220px"><canvas id="chDevices"></canvas></div></div>
+        <div class="panel span-8"><h3>Demandes de contact par type</h3><div class="cw" style="height:220px"><canvas id="chTypes"></canvas></div></div>
+      </div>
+      <p class="hint" style="margin-top:16px">Statistiques anonymes, sans cookie : un visiteur est compté une fois par jour. Vos visites lorsque vous êtes connecté à l'admin ne sont pas comptées.</p>
+    </div>
+
+    <div data-pane="messages" hidden>
+      <div class="main-head">
+        <div><p class="label">Formulaire de contact</p><h2>Messages</h2></div>
+        <div class="seg" id="msgFilter"><button data-f="all" aria-pressed="true">Tous</button><button data-f="nouveau">Nouveaux</button><button data-f="traité">Traités</button></div>
+      </div>
+      <div class="msgs" id="msgList"></div>
+    </div>
+
+    <div data-pane="projects" hidden>
+      <div class="main-head">
+        <div><p class="label">Galerie</p><h2>Réalisations</h2></div>
+        <button class="btn accent" id="newProject" type="button">+ Nouveau projet</button>
+      </div>
+      <div id="projEditor" hidden style="margin-bottom:20px"></div>
+      <div class="plist" id="projList"></div>
+    </div>
+
+    <div data-pane="content" hidden>
+      <div class="main-head"><div><p class="label">Textes et coordonnées</p><h2>Contenu du site</h2></div></div>
+      <form id="contentForm" style="display:grid;gap:24px"></form>
+    </div>
+
+    <div data-pane="security" hidden>
+      <div class="main-head"><div><p class="label">Accès</p><h2>Sécurité</h2></div></div>
+      <form id="pwForm" class="panel" style="max-width:480px">
+        <h3>Changer le mot de passe</h3>
+        <div class="field"><label for="pw_cur">Mot de passe actuel</label><input id="pw_cur" type="password" autocomplete="current-password" required></div>
+        <div class="field"><label for="pw_new">Nouveau mot de passe</label><input id="pw_new" type="password" autocomplete="new-password" minlength="8" required><span class="hint">8 caractères minimum.</span></div>
+        <div class="field"><label for="pw_new2">Confirmer le nouveau mot de passe</label><input id="pw_new2" type="password" autocomplete="new-password" required></div>
+        <div id="pwNotice" hidden></div>
+        <div><button class="btn accent" type="submit">Changer le mot de passe</button></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+<div class="wm" aria-hidden="true"></div>
+<datalist id="cats"><option>Construction neuve</option><option>Gros œuvre</option><option>Rénovation</option><option>Extension</option></datalist>
+
+<script src="../demo/seed.js"></script>
+<script src="../demo/demo-api.js"></script>
+<script src="../assets/vendor/chart.umd.min.js"></script>
+<script src="../assets/js/admin.js?v=2"></script>
+</body>
+</html>
